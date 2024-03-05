@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,20 +32,35 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ContactBook contactBook = ContactBook();
+    final contactBook = ContactBook();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, position) {
-          final contact = contactBook.contact(atIndex: position)!;
-          return ListTile(
-            title: Text(contact.name),
+      body: ValueListenableBuilder(
+        valueListenable: contactBook,
+        builder: (BuildContext context, List<Contact> _, Widget? child) {
+          return ListView.builder(
+            itemBuilder: (context, position) {
+              final contact = contactBook.value[position];
+              return Dismissible(
+                onDismissed: (direction) {
+                  contactBook.remove(contact: contact);
+                },
+                key: ValueKey(contact.id),
+                child: Material(
+                  color: Colors.white,
+                  elevation: 8.0,
+                  child: ListTile(
+                    title: Text(contact.name),
+                  ),
+                ),
+              );
+            },
+            itemCount: contactBook.length,
           );
         },
-        itemCount: contactBook.length,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -106,30 +122,31 @@ class _NewContactViewState extends State<NewContactView> {
 
 class Contact {
   final String name;
+  final String id;
 
-  const Contact({required this.name});
+  Contact({required this.name}) : id = const Uuid().v4();
 }
 
-class ContactBook {
+class ContactBook extends ValueNotifier<List<Contact>> {
   //single ton constructor
-  ContactBook._sharedInstance();
+  ContactBook._sharedInstance() : super([]);
 
   static final ContactBook _shared = ContactBook._sharedInstance();
 
   factory ContactBook() => _shared;
 
-  final List<Contact> _contacts = [];
-
-  int get length => _contacts.length;
+  int get length => value.length;
 
   void add({required Contact contact}) {
-    _contacts.add(contact);
+    value.add(contact);
+    notifyListeners();
   }
 
   void remove({required Contact contact}) {
-    _contacts.remove(contact);
+    final contacts = value;
+    if (contacts.contains(contact)) {
+      value.remove(contact);
+      notifyListeners();
+    }
   }
-
-  Contact? contact({required int atIndex}) =>
-      _contacts.length > atIndex ? _contacts[atIndex] : null;
 }
