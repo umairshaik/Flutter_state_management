@@ -41,8 +41,8 @@ class MyHomePage extends StatelessWidget {
                       (value) => Seconds(),
                     ),
                 initialData: Seconds()),
-            StreamProvider<Minutes>(
-                create: (context) => Stream.periodic(
+            StreamProvider<Minutes>.value(
+                value: Stream.periodic(
                       const Duration(seconds: 5),
                       (value) => Minutes(),
                     ),
