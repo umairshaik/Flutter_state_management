@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class Step1HomePage extends HookWidget {
+class HomePage1 extends HookWidget {
   final String title;
 
-  const Step1HomePage({super.key, required this.title});
+  const HomePage1({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
