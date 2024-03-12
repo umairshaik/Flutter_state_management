@@ -16,11 +16,12 @@ class HomePage3 extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AsyncSnapshot<Image> image = useFuture(
+    final Future<Image> future = useMemoized(() =>
         NetworkAssetBundle(Uri.parse(url))
             .load(url)
             .then((value) => value.buffer.asUint8List())
             .then((value) => Image.memory(value)));
+    final AsyncSnapshot<Image> snapshot = useFuture(future);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -29,7 +30,7 @@ class HomePage3 extends HookWidget {
       body: Center(
           child: Column(
         children: [
-          image.hasData ? image.data : null,
+          snapshot.data,
         ].compactMap().toList(),
       )),
     );
