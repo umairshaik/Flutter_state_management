@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hook_ex/step-1/home_page.dart';
+import 'package:flutter_hook_ex/step-2/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Step1HomePage(title: 'Flutter Demo Home Page'),
+      home: //const Step1HomePage(title: 'Flutter Demo Home Page'),
+          const HomePage(),
     );
   }
 }
